@@ -27,14 +27,16 @@ class Users(db.Model):
 @app.route('/', methods = ['GET', 'POST'])
 def login():
 	if (request.method == 'POST'):
-		email = request.json.get('email')
-		password = request.json.get('password')
+		email = request.form['email']
+		password = request.form['password']
 
-		user = User.query.filter_by(email=email).first()
-
+		user = Users.query.filter_by(email=email).first()
+		
 		if user and check_password_hash(user.password, password):
-			flash('Your email or password is incorrect. Please enter your information again.')
 			return redirect('/home')
+		else:
+			print('incorrect')
+			flash('Your email or password was incorrect. Please enter your information again')
 
 	return render_template('login.html')
 
@@ -55,7 +57,7 @@ def register():
 			return redirect(url_for(''))
 		'''
 
-		user = Users(name=name, email=email, password=check_password_hash(password))
+		user = Users(name=name, email=email, password=generate_password_hash(password))
 		db.session.add(user)
 		db.session.commit()
 		flash('registration successful!')
