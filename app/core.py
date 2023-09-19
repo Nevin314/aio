@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime 
+from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 app = Flask(__name__)
 
@@ -19,7 +19,7 @@ class Users(db.Model):
 	password = db.Column(db.String(200), nullable=False)
 	date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
-	#Create String	
+	#Create String
 	'''
 	def __repr__(self):
 		return '<Name %r>', % self.name
@@ -41,7 +41,7 @@ class Message(db.Model):
 	content = db.Column(db.String(500), nullable=False)
 	user_id = db.Column(db.Integer, db.Foreign_key('user.id'))
 	group_id = db.Column(db.Integer, db.Foreign_key('group.id'))
-	
+
 
 
 @app.route('/', methods = ['GET', 'POST'])
@@ -51,7 +51,7 @@ def login():
 		password = request.form['password']
 
 		user = Users.query.filter_by(email=email).first()
-		
+
 		if user and check_password_hash(user.password, password):
 			return redirect('/home')
 		else:
@@ -68,9 +68,7 @@ def home():
 def register():
 	if request.method == 'POST':
 		name = request.form['name']
-		email = request.form['email']
-		password = request.form['password']
-		'''
+		email = request.form['email'] password = request.form['password'] '''
 		exists = Users.query.filter_by(email=email).first()
 		if exists:
 			flash('This email has already been registered. Please sign-in')
@@ -82,15 +80,15 @@ def register():
 		db.session.commit()
 		flash('registration successful!')
 		return redirect('/')
-	
+
 	return render_template('temp.html')
 
 @app.route('/passing', methods=['GET', 'POST'])
 def display():
 	if request.method == 'POST':
 		result = request.form
-		
-		
+
+
 		# Send the form result data to a file
 		return render_template('result_data.html', result=result)
 
@@ -98,7 +96,7 @@ with app.app_context():
 	db.create_all()
 
 if __name__ == '__main__':
-	
+
 	app.run(debug=True)
 
 
