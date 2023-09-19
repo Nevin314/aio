@@ -24,6 +24,26 @@ class Users(db.Model):
 	def __repr__(self):
 		return '<Name %r>', % self.name
 	'''
+
+class Group(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(100), nullable=False)
+	members = db.relationship('User', secondary='group_members', back_populates='groups')
+	messages = db.relationship('Message', backref='group', lazy='dynamic')
+
+group_members = db.Table('group_members',
+	db.Column('user_id', db.Integer, db.Foreign_key('user.id')),
+	db.Column('group_id', db.Integer, db.Foreign_key('group.id'))
+)
+
+class Message(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	content = db.Column(db.String(500), nullable=False)
+	user_id = db.Column(db.Integer, db.Foreign_key('user.id'))
+	group_id = db.Column(db.Integer, db.Foreign_key('group.id'))
+	
+
+
 @app.route('/', methods = ['GET', 'POST'])
 def login():
 	if (request.method == 'POST'):
